@@ -38,6 +38,8 @@ rclone config
 
     ![Opciones OAuth](./assets/rclone_valores_opcionales.png)
 
+❗ Nota: Para saber más sobre los beneficios de tener credenciales propias mediante API de Google Drive revisa la sección [💪 Crear credenciales propias de API para Google Drive](💪-Crear-credenciales-propias-de-API-para-Google-Drive) que encontrarás al final del presente tutorial.
+
 + ``Option scope``. Marcaremos la opción que más nos convenga, 1 en el caso que atañe a este tutorial:
     + 1 (_drive_): Acceso completo a todos los archivos de tu Google Drive. Opción recomendada a la hora de hacer copias de seguridad (lee, escribe, modifica y borra lo que sea necesario).
     + 2 (_drive.readonly_): Solo lectura. Incompatible si lo que queremos es subir copias de seguridad.
@@ -46,7 +48,7 @@ rclone config
 + ``Option service_account_file``. Se usa para la identificación del usuario ante Google Drive sin intervención humana. Lo dejaremos vacío.
 + ``Edit advanced config?``. Marcaremos ``No``.
 + ``Use auto config?``. Marcaremos ``No``. De esta manera conectará para ofrecernos un enlace público que pegaremos en el navegador donde tengamos iniciada nuestra sesión de Google y proceder así con la autorización de conexión.  
-❗ Nota! Como nuestro servidor no tiene entorno gráfico deberemos copiar la solicitud de autorización en la terminal de un equipo que tenga __la misma versión de rclone__ que la que tenemos instalada que nuestro servidor.
+❗ Nota: Como nuestro servidor no tiene entorno gráfico deberemos copiar la solicitud de autorización en la terminal de un equipo que tenga __la misma versión de rclone__ que la que tenemos instalada que nuestro servidor.
     ```bash
      rclone authorize "drive" "eyJzY45wGMI6ZkRyaXZkIn075RRaJZe2a"
     ```
@@ -153,6 +155,25 @@ Por ejemplo, si quisiéramos que se ejecutara a las 03:00 de la madrugada solo l
 rclone ls gdrivecrypt:BackupPrincipal/Actual/
 rclone ls gdrivecrypt:BackupPrincipal/Historial/
 ```
+
+### Buscar archivos o directorios concretos en servidor remoto
+Aunque rclone no tiene un ``grep`` integrado de manera nativa, sí que lo podemos combinar con el de Linux para que el comando buscar devuelva una lista o archivo concreto.
+
+```bash
+rclone ls gdrivecrypt:BackupPrincipal/Actual | grep "Palabra a buscar"
+```
+💡 Recuerda: debes buscar en la unidad ``gdrivecrypt`` ya que buscar en ``gdrive`` lo que hace es intentar buscar el nombre del archivo que le solicitamos (por ejemplo Documento1.pdf) en una un repertorio de directorios o archivos con nombres encriptados. En definitiva, no encontraría nada.
+
+```bash
+# No
+rclone ls gdrive:BackupPrincipal/Actual | grep "Documento1.pdf"
+# Sí
+rclone ls gdrivecrypt:BackupPrincipal/Actual | grep "Documento1.pdf"
+```
+
+![Ejemplo de búsqueda con grep](./assets/rclone_buscar_grep.png)
+
+
 ### Recuperar archivos desde directorio remoto a local
 
 ```bash
@@ -188,3 +209,26 @@ Llegados a este punto, es fundamental conocer el procedimiento de recuperación 
 5. Para restaurar archivos:
     + 1 archivo concreto: ``rclone copy gdrivecrypt:BackupPrincipal/Actual/Documento1.pdf /home/mi_usuario/``
     + Restaurar todo el backup: ``rclone sync gdrivecrypt:BackupPrincipal/Actual /ruta/local``
+
+## 💪 Crear credenciales propias de API para Google Drive
+Si nuestra intención es pasar grandes cantidades de archivos desde un repositorio local a Google Drive, conseguiremos mejor rendimiento si obviamos las credenciales genéricas por defecto y creamos las nuestras propias. ¿Por qué?
+
++ Cuando __no configuramos__ ``client_id`` y ``client_secret`` propios, rclone usa credenciales públicas utilizadas por muchos usuarios.
++ Debido a eso, Google establece cuotas y limitaciones de uso.
++ Con credenciales propias tenemos nuestra propia cuota lo que se traduce en más velocidad y estabilidad en la conexión.
+
+### Guía para la creación de credenciales propias mediante API de Google
+
+1. Ir a [Google Cloud Console](https://console.cloud.google.com)
+2. Crear un proyecto nuevo, por ejemplo de nombre _RcloneBackup_.
+
+![Crear proyecto nuevo API Google](./assets/rclone_api_google_crear_proyecto.png)
+
+3. Activar la API de Google Drive en el menú ``API y servicios`` > ``Biblioteca`` > ``Google Drive API``> ``Activar``.
+
+![Activar API Google Drive](./assets/rclone_api_google_habilitar_api_google_drive.png)
+
+4. Creación de credenciales. Marcaremos ``Datos de los usuarios``.
+5. Tipo de aplicación. Marcaremos ``App de escritorio``.
+
+Llegados a este último punto Google procederá con la descarga de nuestro ``client_id`` y ``client_secret`` propios.
