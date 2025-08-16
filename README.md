@@ -65,7 +65,7 @@ rclone config
     rclone config
     ```
 + ``New remote``: Opción ``14 (crypt)``.
-+ ``Remote to encrypt/decrypt``: ``gdrive:BackupPrincipal``
++ ``Remote to encrypt/decrypt``: ``gdrive:``
 + ``Encrypt file/directory names?``: A continuación nos pedirá si queremos encriptar nombres de archivos y directorios. Le podemos indicar que sí en las dos opciones. Nos solicitará la contraseña para la encriptación de los datos, debemos **ANOTARLA Y GUARDARLA** en lugar seguro.
 
 ## ⌨️ Script para las copias de seguridad
@@ -104,7 +104,12 @@ DATE=$(date +"%Y-%m-%d_%H-%M-%S")
     --log-file="$LOGDIR/backup_$DATE.log" \
     --log-level INFO \
     --transfers=4 \
-    --checkers=8
+    --checkers=8 \
+    --tpslimit=8 \
+    --tpslimit-burst=8 \
+    --bwlimit=8M \
+    --fast-list \
+    --drive-chunk-size=64M
 
 echo "Backup con versionado completado: $DATE"
 
