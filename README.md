@@ -38,7 +38,7 @@ rclone config
 
     ![Opciones OAuth](./assets/rclone_valores_opcionales.png)
 
-❗ Nota: Para saber más sobre los beneficios de tener credenciales propias mediante API de Google Drive revisa la sección [💪 Crear credenciales propias de API para Google Drive](💪-Crear-credenciales-propias-de-API-para-Google-Drive) que encontrarás al final del presente tutorial.
+❗ Nota: Para saber más sobre los beneficios de tener credenciales propias mediante API de Google Drive revisa la sección [💪 Crear credenciales propias de API para Google Drive](#-crear-credenciales-propias-de-api-para-google-drive) que encontrarás al final del presente tutorial.
 
 + ``Option scope``. Marcaremos la opción que más nos convenga, 1 en el caso que atañe a este tutorial:
     + 1 (_drive_): Acceso completo a todos los archivos de tu Google Drive. Opción recomendada a la hora de hacer copias de seguridad (lee, escribe, modifica y borra lo que sea necesario).
